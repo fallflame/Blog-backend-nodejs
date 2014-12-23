@@ -1,4 +1,4 @@
-var app = angular.module("blog", []);
+var app = angular.module("blog", ['ngSanitize']);
 
 app.controller("BlogCtrl",['$http', function($http) {
 
@@ -17,6 +17,8 @@ app.controller("BlogCtrl",['$http', function($http) {
 
 	this.createNewPost = function(){
 
+		this.newPost.content = tinyMCE.activeEditor.getContent();
+
 		$http.post('/api/posts', this.newPost).
 			success(function(){
 				that.newPost.updatedAt = new Date();
@@ -30,6 +32,7 @@ app.controller("BlogCtrl",['$http', function($http) {
 		this.posts.forEach(function(val, ind){
 			if (val._id === id){
 				that.newPost = val;
+				tinyMCE.activeEditor.setContent(val.content)
 			}
 		});  
 
@@ -46,6 +49,7 @@ app.controller("BlogCtrl",['$http', function($http) {
 					}
 				});
 				that.newPost.updatedAt = new Date();
+				this.newPost.content = tinyMCE.activeEditor.getContent();
 				that.posts.unshift(that.newPost);
 
 				that.newPost = {};
