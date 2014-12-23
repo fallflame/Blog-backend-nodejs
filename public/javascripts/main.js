@@ -15,13 +15,41 @@ app.controller("BlogCtrl",['$http', function($http) {
 			});
 	};
 
-	this.saveNewPost = function(){
+	this.createNewPost = function(){
 
 		$http.post('/api/posts', this.newPost).
 			success(function(){
 				that.newPost.updatedAt = new Date();
 				that.posts.unshift(that.newPost);
 				that.newPost = {};
+			});
+	};
+
+	this.loadPostToUpdateByID = function(id){
+
+		this.posts.forEach(function(val, ind){
+			if (val._id === id){
+				that.newPost = val;
+			}
+		});  
+
+	}
+
+	this.updatePostByID = function(id){
+
+		$http.put('/api/posts/'+id, this.newPost).
+			success(function(){
+
+				that.posts.forEach(function(val, ind){
+					if(val._id === id){
+						that.posts.splice(ind, 1);
+					}
+				});
+				that.newPost.updatedAt = new Date();
+				that.posts.unshift(that.newPost);
+
+				that.newPost = {};
+
 			});
 	};
 

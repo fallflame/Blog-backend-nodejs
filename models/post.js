@@ -9,11 +9,9 @@ var PostSchema = new db.Schema({
 
 var Post = db.mongoose.model('Post', PostSchema);
 
-module.exports.addPost = addPost;
-module.exports.getPosts = getPosts;
-module.exports.removePosts = removePosts;
+var exports = module.exports;
 
-function addPost (newPost, callback) {
+exports.addNewPost = function (newPost, callback) {
 
 	newPost.createdAt = new Date();
 	newPost.updatedAt = new Date();
@@ -33,21 +31,10 @@ function addPost (newPost, callback) {
 	});
 }
 
-/* function getPosts([selector,] callback);
-	
-	selector : PlainObject;
-	callback : function(docs);
-*/
-
-function getPosts (selector, callback) {
-
-	if (typeof(selector) === 'function'){
-		var callback = selector;
-		selector = {};
-	}
+exports.getAllPosts = function (callback) {
 
 	Post
-	.find(selector)
+	.find({})
 	.sort('-updatedAt')
 	.exec(function(err, docs){
 
@@ -59,8 +46,12 @@ function getPosts (selector, callback) {
 
 }
 
-function removePosts(selector) {
+exports.updatePostByID = function (id, updateData) {
+	Post.update({_id: id}, updateData).exec();
+}
 
-	Post.remove(selector).exec();
+exports.removePostByID = function (id) {
+
+	Post.remove({_id: id}).exec();
 
 }
