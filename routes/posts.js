@@ -3,10 +3,14 @@ var router = express.Router();
 var post = require('../models/post');
 
 
-/* GET posts listing. */
+/**
+ * GET posts' list. 
+ * req : don't need
+ * res : will respons a JSON of list of posts - [{_id: id, title:title}]
+*/
 router.get('/', function(req, res){
 
-	post.getAllPosts(function(docs){
+	post.getPostsList(function(docs){
 		res.json(docs);
 	});
 
