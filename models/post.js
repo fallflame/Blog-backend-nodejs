@@ -1,11 +1,16 @@
 var db = require('../lib/db');
 
+var CommentSchema = new db.Schema({
+	content   : {type: String, required: true},
+	commenter : {type: String, required: true}
+});
+
 var PostSchema = new db.Schema({
-	title 	: 	{ type: String, required: true, trim: true},
-	content : 	String,
+	title 	: 	{type: String, required: true},
+	content : 	{type: String, required: true},
 	createdAt : Date,
 	updatedAt : Date,
-	comments : []
+	comments : [CommentSchema]
 });
 
 var Post = db.mongoose.model('Post', PostSchema);
@@ -14,7 +19,7 @@ var exports = module.exports;
 /**
  * @param {function} callback(err, docs)
  * @callback err
- * @callback docs: docs is a array of posts, each post contain: _id, title, updatedAt
+ * @callback docs: a array of doc, each post contain: _id, title, updatedAt
  */
 exports.getPostsList = function (callback) {
 	Post
@@ -28,7 +33,8 @@ exports.getPostsList = function (callback) {
 
 /**
  * @param newPost: a new Post must have a title
- * @param callback(err)
+ * @param callback(err, doc)
+ * @callback doc: the doc saved
  */
 
 exports.addNewPost = function (newPost, callback) {
@@ -37,22 +43,22 @@ exports.addNewPost = function (newPost, callback) {
 	newPost.updatedAt = new Date();
 	instance = new Post(newPost);
 
-	instance.save(function(err){
-		callback(err);
+	instance.save(function(err, doc){
+		callback(err, doc);
 	});
 }
 
 /**
  * @param id
  * @param callback(err, docs)
- * @callback docs: a document
+ * @callback doc: a document, will be null if no found
  */
 
 exports.getPostByID = function (id, callback) {
 	Post
 	.findById(id)
-	.exec(function(err, docs){
-		callback(err, docs);
+	.exec(function(err, doc){
+		callback(err, doc);
 	});
 }
 
@@ -75,7 +81,7 @@ exports.updatePostByID = function (id, updateData, callback) {
  * @param id: the id of the post
  * @param callback(err)
  */
-exports.removePostByID = function (id) {
+exports.removePostByID = function (id, callback) {
 	Post
 	.remove({_id: id})
 	.exec(function(err){
