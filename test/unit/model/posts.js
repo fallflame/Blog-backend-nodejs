@@ -4,7 +4,7 @@ var assert = require("assert")
 
 describe('Post model', function(){
 
-	var newPostID;
+	var newPostID, commentId;
 
 	describe('addNewPost', function(){
 		it('should add a new instance to the database and return it in a callback', function(done){
@@ -86,7 +86,6 @@ describe('Post model', function(){
 	});
 
 	describe('addCommentToPost', function(){
-		var commentId;
 
 		it('should add a comment to the post, pass the comments in the callback', function(done){
 			var comment = {
@@ -96,7 +95,8 @@ describe('Post model', function(){
 
 			post.addCommentToPost(newPostID, comment, function(err, comments){
 				var i, length;
-				
+				assert(!err);
+
 				for(i=0, length=comments.length; i<length; i++){
 					if(comments[i].content === 'A comment'){
 						commentId = comments[i]._id;
@@ -110,8 +110,22 @@ describe('Post model', function(){
 
 		it('should found the comment in the post', function(done){
 			post.getPostById(newPostID, function(err, doc){
+				assert(!err);
 				assert.equal(doc.comments.id(commentId).content, 'A comment');
 				done();
+			});
+		});
+	});
+
+	describe('removeCommentInPost', function(){
+		it('should remove the comment', function(done){
+			post.removeCommentInPost(newPostID, commentId, function(err, comments){
+				assert(!err);
+				post.getPostById(newPostID, function(err, doc){
+					assert(!err);
+					assert(!doc.comments.id(commentId));
+					done();
+				});
 			});
 		});
 	});

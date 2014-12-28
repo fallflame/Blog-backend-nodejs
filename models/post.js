@@ -97,7 +97,33 @@ exports.addCommentToPost = function(id, comment, callback) {
 			if(err){
 				callback(err);
 			}
-			Post.findById({_id: id})
+			Post.findById(id)
+				.select('comments')
+				.exec(function(err, doc){
+					callback(err, doc.comments);
+			});
+		});
+	});
+}
+
+/**
+ * @param id : the id of the post
+ * @param commentId : the id of the comment
+ * @param callback(err, comments)
+ * @callback comments : the new comment list
+ */
+exports.removeCommentInPost = function(id, commentId, callback){
+	Post.findById(id).select('comments').exec(function(err, doc){
+		if(err){
+			callback(err);
+		}
+		var newComments = doc.comments.pull(commentId);
+
+		Post.update({_id: id}, {comments: newComments}).exec(function(err){
+			if (err){
+				callback(err);
+			}
+			Post.findById(id)
 				.select('comments')
 				.exec(function(err, doc){
 					callback(err, doc.comments);
