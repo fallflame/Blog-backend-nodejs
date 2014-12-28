@@ -10,7 +10,7 @@ var post = require('../models/post');
 */
 router.get('/', function(req, res){
 
-	post.getPostsList(function(docs){
+	post.getPostsList(function(err, docs){
 		res.json(docs);
 	});
 

@@ -121,6 +121,7 @@ describe('Post model', function(){
 		it('should remove the comment', function(done){
 			post.removeCommentInPost(newPostID, commentId, function(err, comments){
 				assert(!err);
+				assert(!comments.length);
 				post.getPostById(newPostID, function(err, doc){
 					assert(!err);
 					assert(!doc.comments.id(commentId));
