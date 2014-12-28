@@ -2,7 +2,8 @@ var db = require('../lib/db');
 
 var CommentSchema = new db.Schema({
 	content   : {type: String, required: true},
-	commenter : {type: String, required: true}
+	commenter : {type: String, required: true},
+	createdAt : Date
 });
 
 var PostSchema = new db.Schema({
@@ -54,7 +55,7 @@ exports.addNewPost = function (newPost, callback) {
  * @callback doc: a document, will be null if no found
  */
 
-exports.getPostByID = function (id, callback) {
+exports.getPostById = function (id, callback) {
 	Post
 	.findById(id)
 	.exec(function(err, doc){
@@ -67,7 +68,7 @@ exports.getPostByID = function (id, callback) {
  * @param updateData: the field need to update and the new value
  * @param callback(err)
  */
-exports.updatePostByID = function (id, updateData, callback) {
+exports.updatePostById = function (id, updateData, callback) {
 	updateData.updatedAt = new Date();
 	Post
 	.update({_id: id}, updateData)
@@ -76,12 +77,40 @@ exports.updatePostByID = function (id, updateData, callback) {
 	});
 }
 
+/**
+ * @param id : the id of the post
+ * @param comment : the comment to add
+ * @param callback(err, comments)
+ * @callback comments : the new comment list
+ */
+exports.addCommentToPost = function(id, comment, callback) {
+	Post.findById(id).select('comments').exec(function(err, doc){
+		if(err){
+			callback(err);
+		}
+
+		var comments = doc.toObject().comments;
+		comment.createdAt = new Date();
+		comments.push(comment);
+
+		Post.update({_id: id}, {comments: comments}).exec(function(err){
+			if(err){
+				callback(err);
+			}
+			Post.findById({_id: id})
+				.select('comments')
+				.exec(function(err, doc){
+					callback(err, doc.comments);
+			});
+		});
+	});
+}
 
 /**
  * @param id: the id of the post
  * @param callback(err)
  */
-exports.removePostByID = function (id, callback) {
+exports.removePostById = function (id, callback) {
 	Post
 	.remove({_id: id})
 	.exec(function(err){
