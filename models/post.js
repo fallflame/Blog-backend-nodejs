@@ -15,7 +15,6 @@ var PostSchema = new db.Schema({
 });
 
 var Post = db.mongoose.model('Post', PostSchema);
-var exports = module.exports;
 
 /**
  * @param {function} callback(err, docs)
@@ -39,6 +38,7 @@ exports.getPostsList = function (callback) {
  */
 
 exports.addNewPost = function (newPost, callback) {
+
 	var instance
 	newPost.createdAt = new Date();
 	newPost.updatedAt = new Date();

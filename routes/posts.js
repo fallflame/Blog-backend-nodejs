@@ -11,7 +11,12 @@ var post = require('../models/post');
 router.get('/', function(req, res){
 
 	post.getPostsList(function(err, docs){
+		if(err){
+			console.log('Error:'+err);
+			res.json({err: 'Cannot read the posts list'});
+		}
 		res.json(docs);
+		res.end();
 	});
 
 });
@@ -24,8 +29,15 @@ router.post('/', function(req, res){
 		content : req.body.content
 	};
 
-	post.addNewPost(newPost);
-	res.end();
+	post.addNewPost(newPost, function(err, doc){
+		if(err){
+			console.log('Error:'+err);
+			console.log(req.body);
+			res.json({err: 'Something error when create new post'});
+		}
+		res.json(doc);
+		res.end();
+	});
 
 });
 
