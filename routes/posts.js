@@ -50,7 +50,7 @@ router.get('/:id', function(req, res){
 });
 
 /* PUT update a post */
-/*
+
 router.put('/:id', function(req, res){
 
 	var modifiedPost = {
@@ -67,14 +67,12 @@ router.put('/:id', function(req, res){
 
 	post.updatePostById(req.params.id, modifiedPost, function(err){
 		if(err){
-			console.log('Error:'+err);
-			console.log(req.body);
 			res.json({err: 'Something error when update new post'});
 		}
 		res.end();
 	});
 });
-*/
+
 
 /* DELETE a post */
 /*

@@ -119,10 +119,9 @@ describe('GET /:id', function(){
 	});
 });
 
-/*
 describe('PUT /:id', function(){
 
-	before(function(){
+	before(function(done){
 		var options = {
 			hostname: hostname,
 			port: port,
@@ -138,7 +137,9 @@ describe('PUT /:id', function(){
 			content: 'test content'
 		}
 
-		var req = http.request(options, function(){});
+		var req = http.request(options, function(){
+			done();
+		});
 		req.write(JSON.stringify(testPost));
 		req.end();
 	});
@@ -147,29 +148,32 @@ describe('PUT /:id', function(){
 		var options = {
 			hostname: hostname,
 			port: port,
-			path: '/api/posts/'+ testPostId,
+			path: '/api/posts/' + testPostId,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 			}
 		};
 
-		http.request(options, function(res){
-			
+		var req = http.request(options, function(res){
+		 
 			var body = '';
 			res.setEncoding('utf8');
 			res.on('data', function (chunk) {
 				body += chunk;
 			});
+
 			res.on('end', function(){
 				var doc = JSON.parse(body);
 
 				assert(!doc.err);
-				assert.equal(doc.title, testPost.title);
-
+				assert.equal(doc.title, 'new test Title');
+				
 				done();
 			});
+
 		});
+
+		req.end();
 	})
 });
-*/
