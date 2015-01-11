@@ -38,7 +38,9 @@ router.post('/', function(req, res){
 
 });
 
-/* GET a post */
+/* GET a post 
+	if the id doesn't exsit, response is null
+*/
 router.get('/:id', function(req, res){
 	post.getPostById(req.params.id, function(err, doc){
 		if(err){
@@ -75,13 +77,16 @@ router.put('/:id', function(req, res){
 
 
 /* DELETE a post */
-/*
+
 router.delete('/:id', function(req, res){
 
-	post.removePostByID(req.params.id);
-	res.end();
-
+	post.removePostById(req.params.id, function(err){
+		if(err){
+			res.json({err: 'Something error when delete new post'});
+		}
+		res.end();
+	});
 });
-*/
+
 
 module.exports = router;

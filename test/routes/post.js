@@ -159,7 +159,7 @@ describe('PUT /:id', function(){
 		 
 			var body = '';
 			res.setEncoding('utf8');
-			res.on('data', function (chunk) {
+			res.on('data', function(chunk) {
 				body += chunk;
 			});
 
@@ -177,3 +177,58 @@ describe('PUT /:id', function(){
 		req.end();
 	})
 });
+
+describe('DELETE /:id', function(){
+	before(function(done){
+		var options = {
+			hostname: hostname,
+			port: port,
+			path: '/api/posts/' + testPostId,
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		};
+
+		var req = http.request(options, function(res){
+			done();
+		});
+		req.end();
+	});
+
+	it('shouldn\'t find the post after delete', function(done){
+		var options = {
+			hostname: hostname,
+			port: port,
+			path: '/api/posts/'+testPostId,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		};
+
+		var req = http.request(options, function(res){
+		 
+			var body = '';
+			res.setEncoding('utf8');
+			res.on('data', function (chunk) {
+				body += chunk;
+			});
+
+			res.on('end', function(){
+				var doc = JSON.parse(body);
+				assert(doc === null);				
+				done();
+			});
+
+		});
+
+		req.end();
+	});
+});
+
+
+
+
+
+
