@@ -178,6 +178,65 @@ describe('PUT /:id', function(){
 	})
 });
 
+describe('POST /:pid/comments/', function(){
+	before(function(done){
+		var options = {
+			hostname: hostname,
+			port: port,
+			path: '/api/posts/' + testPostId + '/comments',
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		};
+
+		var testComment = {
+			content: 'test Comment',
+			commenter: 'Yan'
+		};
+
+		var req = http.request(options, function(res){
+			done();
+		});
+
+		req.end(JSON.stringify());
+	});
+
+	it('should can get the comment added', function(){
+		var options = {
+			hostname: hostname,
+			port: port,
+			path: '/api/posts/'+testPostId,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		};
+
+		var req = http.request(options, function(res){
+		 
+			var body = '';
+			res.setEncoding('utf8');
+			res.on('data', function (chunk) {
+				body += chunk;
+			});
+
+			res.on('end', function(){
+				var doc = JSON.parse(body);
+
+				assert(!doc.err);
+				assert.equal(doc.comments[0].content, 'test Comment');
+				
+				done();
+			});
+
+		});
+
+		req.end();
+	});
+});
+
+
 describe('DELETE /:id', function(){
 	before(function(done){
 		var options = {
