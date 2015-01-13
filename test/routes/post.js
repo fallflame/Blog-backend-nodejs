@@ -201,7 +201,7 @@ describe('POST /:pid/comments/', function(){
 			done();
 		});
 
-		req.end(JSON.stringify());
+		req.end(JSON.stringify(testComment));
 	});
 
 	it('should can get the comment added', function(done){

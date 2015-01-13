@@ -75,6 +75,21 @@ router.put('/:id', function(req, res){
 	});
 });
 
+/* POST a comment */
+router.post('/:id/comments', function(req, res){
+
+	var newComment = {};
+	newComment.content = req.body.content;
+	newComment.commenter = req.body.commenter || 'Anomynous';
+
+	post.addCommentToPost(req.params.id, newComment, function(err){
+		if(err){
+			res.json({err: 'Something error when add new comment'});
+		}
+		res.end();
+	});
+});
+
 
 /* DELETE a post */
 
